@@ -106,6 +106,40 @@ body {
   color: #9ca3af;
 }
 
+/* Navigation Buttons */
+.navigation-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: #4f46e5;
+  color: white;
+}
+
+.nav-button:hover:not(:disabled) {
+  background-color: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.nav-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* Buttons */
 .generate-button, .download-button {
   display: inline-flex;

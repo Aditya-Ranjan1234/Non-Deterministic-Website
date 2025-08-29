@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './styles.css';
 
 function App() {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('modern');
   const [html, setHtml] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading true
   const [error, setError] = useState('');
   const [remaining, setRemaining] = useState(100);
   const [resetTime, setResetTime] = useState('');
+  const [currentId, setCurrentId] = useState(Date.now()); // Unique ID for each generation
 
   const styles = [
     { value: 'modern', label: 'Modern' },
@@ -18,9 +19,34 @@ function App() {
     { value: 'elegant', label: 'Elegant' },
   ];
 
-  const generateWebsite = async (e) => {
-    e.preventDefault();
-    if (!prompt.trim()) {
+  const generateRandomWebsite = useCallback(async () => {
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch('http://localhost:8000/random', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to generate website');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      setError(err.message);
+      return null;
+    }
+  }, []);
+
+  const generateCustomWebsite = async (e) => {
+    if (e) e.preventDefault();
+    if (e && !prompt.trim()) {
       setError('Please enter a prompt');
       return;
     }
@@ -69,6 +95,67 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  // Handle browser navigation (back/forward buttons)
+  useEffect(() => {
+    const handlePopState = async () => {
+      const data = await generateRandomWebsite();
+      if (data) {
+        setHtml(data.html);
+        setRemaining(data.remaining);
+        if (data.reset_time) {
+          const resetDate = new Date(data.reset_time * 1000);
+          setResetTime(resetDate.toLocaleString());
+        }
+      }
+      // Update the URL with a new unique ID
+      const newId = Date.now();
+      setCurrentId(newId);
+      window.history.pushState({ id: newId }, '', `/${newId}`);
+    };
+
+    // Initial load
+    const loadInitialWebsite = async () => {
+      const data = await generateRandomWebsite();
+      if (data) {
+        setHtml(data.html);
+        setRemaining(data.remaining);
+        if (data.reset_time) {
+          const resetDate = new Date(data.reset_time * 1000);
+          setResetTime(resetDate.toLocaleString());
+        }
+        // Set initial history state
+        const newId = Date.now();
+        setCurrentId(newId);
+        window.history.replaceState({ id: newId }, '', `/${newId}`);
+      }
+      setIsLoading(false);
+    };
+
+    loadInitialWebsite();
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [generateRandomWebsite]);
+
+  // Function to manually generate a new random website
+  const generateNewWebsite = () => {
+    const newId = Date.now();
+    setCurrentId(newId);
+    window.history.pushState({ id: newId }, '', `/${newId}`);
+    generateRandomWebsite().then(data => {
+      if (data) {
+        setHtml(data.html);
+        setRemaining(data.remaining);
+        if (data.reset_time) {
+          const resetDate = new Date(data.reset_time * 1000);
+          setResetTime(resetDate.toLocaleString());
+        }
+      }
+    });
+  };
+
   return (
     <div className="app">
       <header className="header">
@@ -78,45 +165,24 @@ function App() {
       </header>
 
       <main className="main-content">
-        <form onSubmit={generateWebsite} className="generator-form">
-          <div className="form-group">
-            <label htmlFor="prompt">What kind of website do you want to create?</label>
-            <input
-              id="prompt"
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="e.g., A portfolio for a photographer, A restaurant website, etc."
-              className="input-field"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="style">Style:</label>
-            <select
-              id="style"
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
-              className="select-field"
-            >
-              {styles.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
+        <div className="navigation-buttons">
           <button 
-            type="submit" 
+            onClick={generateNewWebsite}
             disabled={isLoading}
-            className="generate-button"
+            className="nav-button"
           >
-            {isLoading ? 'Generating...' : 'Generate Website'}
+            {isLoading ? 'Loading...' : 'Generate New Website'}
           </button>
-          
-          {error && <div className="error-message">{error}</div>}
-        </form>
+          <button 
+            onClick={downloadWebsite}
+            disabled={isLoading || !html}
+            className="nav-button"
+          >
+            Download Website
+          </button>
+        </div>
+        
+        {error && <div className="error-message">{error}</div>}
 
         {html && (
           <div className="preview-section">

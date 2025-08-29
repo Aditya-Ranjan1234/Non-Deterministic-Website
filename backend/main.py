@@ -1,14 +1,42 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import groq
 import time
-from typing import Optional
+import random
+from typing import Optional, List, Dict
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
+
+# List of random topics and styles for generation
+RANDOM_TOPICS = [
+    "a personal portfolio for a digital artist",
+    "a restaurant website with online ordering",
+    "a travel blog about hidden gems",
+    "a tech startup landing page",
+    "a photography portfolio",
+    "an e-commerce site for handmade crafts",
+    "a fitness coach's website",
+    "a music band's official site",
+    "a recipe blog",
+    "a pet adoption platform"
+]
+
+STYLES = [
+    "minimalist",
+    "modern",
+    "retro",
+    "futuristic",
+    "corporate",
+    "playful",
+    "elegant",
+    "bold",
+    "clean",
+    "colorful"
+]
 
 app = FastAPI()
 
@@ -31,7 +59,27 @@ class GenerationRequest(BaseModel):
 
 @app.get("/")
 async def read_root():
-    return {"message": "Non-deterministic Website Generator API"}
+    return {
+        "message": "Non-deterministic Website Generator API",
+        "endpoints": {
+            "GET /random": "Get a random website",
+            "POST /generate": "Generate a website with custom prompt"
+        }
+    }
+
+@app.get("/random")
+async def generate_random_website():
+    """Generate a website with random topic and style."""
+    random_data = get_random_prompt()
+    request = GenerationRequest(**random_data)
+    return await generate_website(request)
+
+def get_random_prompt() -> Dict[str, str]:
+    """Generate a random prompt and style combination."""
+    return {
+        "prompt": random.choice(RANDOM_TOPICS),
+        "style": random.choice(STYLES)
+    }
 
 @app.post("/generate")
 async def generate_website(request: GenerationRequest):
@@ -48,6 +96,12 @@ async def generate_website(request: GenerationRequest):
             status_code=429,
             detail=f"Daily limit of {DAILY_LIMIT} websites reached. Try again tomorrow."
         )
+        
+    # If no prompt is provided, generate a random one
+    if not request.prompt:
+        random_data = get_random_prompt()
+        request.prompt = random_data["prompt"]
+        request.style = random_data["style"]
 
     # Initialize Groq client
     api_key = os.getenv("GROQ_API_KEY")
