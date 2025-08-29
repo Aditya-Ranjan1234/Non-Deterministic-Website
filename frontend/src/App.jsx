@@ -159,8 +159,8 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Non-Deterministic Website Generator</h1>
-        <p className="subtitle">Create unique websites with AI - {remaining} generations remaining today</p>
+        <h1>AI Website Generator</h1>
+        <p>Discover unique, AI-created websites</p>
         {resetTime && <p className="reset-info">Daily limit resets at: {resetTime}</p>}
       </header>
 
