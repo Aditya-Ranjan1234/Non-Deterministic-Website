@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: non-deterministic-backend
+    env: python
+    buildCommand: |
+      python -m pip install --upgrade pip
+      pip install --no-cache-dir -r requirements.txt
+    startCommand: uvicorn backend.main:app --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.8
+      - key: PORT
+        value: 10000
+      - key: GROQ_API_KEY
+        value: ${GROQ_API_KEY}
+    plan: free
