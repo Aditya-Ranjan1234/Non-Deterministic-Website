@@ -171,14 +171,7 @@ function App() {
             disabled={isLoading}
             className="nav-button"
           >
-            {isLoading ? 'Loading...' : 'Generate New Website'}
-          </button>
-          <button 
-            onClick={downloadWebsite}
-            disabled={isLoading || !html}
-            className="nav-button"
-          >
-            Download Website
+            {isLoading ? 'Creating...' : 'Generate Random Website'}
           </button>
         </div>
         
@@ -186,12 +179,7 @@ function App() {
 
         <div className="preview-section">
           <div className="preview-header">
-            <h2>{isLoading ? 'Generating Your Website...' : 'Website Preview'}</h2>
-            {html && (
-              <button onClick={downloadWebsite} className="download-button">
-                Download Website
-              </button>
-            )}
+            <h2>{isLoading ? 'Creating Something Amazing...' : 'Your Website'}</h2>
           </div>
           <div className="preview-container">
             {isLoading ? (

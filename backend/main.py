@@ -114,35 +114,24 @@ async def generate_website(request: GenerationRequest):
     client = groq.Groq(api_key=api_key)
 
     try:
-        # Prepare the prompt with optional style
-        prompt_text = f"""Create a complete, content-rich website about: {request.prompt}
+        prompt_text = """Create a vibrant, colorful one-page website about an interesting topic of your choice.
         
-        Important requirements:
-        1. Generate a full website with unique, detailed content (no placeholders)
-        2. Include at least 3 distinct sections with different types of content
-        3. Each section should have a clear heading and meaningful content
-        4. Use CSS for styling (no external resources or images)
-        5. Make it responsive and mobile-friendly
-        6. Include a navigation menu that links to all sections
-        7. Add a footer with relevant information
-        8. Use semantic HTML5 elements
+        Requirements:
+        1. Create a single-page website with 1-2 main sections
+        2. Use bright, vibrant colors and gradients
+        3. No placeholders or lorem ipsum - generate real content
+        4. Make it visually appealing with CSS (no images)
+        5. Include:
+           - A catchy headline
+           - 1-2 paragraphs of engaging content
+           - Some styled text elements (quotes, highlights, etc.)
+           - A simple footer
+        6. Keep the design clean and modern
+        7. Make it responsive for all screen sizes
         """
         
         if request.style:
-            prompt_text += f"\n        Style: {request.style.capitalize()} design aesthetic"
-            
-        # Add some randomness to the prompt
-        content_types = [
-            "Include interesting facts and statistics",
-            "Add a section with a brief history or background",
-            "Include a section with practical tips or advice",
-            "Add a section with common questions and answers",
-            "Include a section with related topics or further reading"
-        ]
-        
-        # Select 2-3 random content types to include
-        selected_content = random.sample(content_types, k=random.randint(2, 3))
-        prompt_text += "\n        Also include:\n" + "\n".join(f"- {item}" for item in selected_content)
+            prompt_text += f"\n        Style: {request.style.capitalize()} aesthetic with vibrant colors"
         
         # Call Groq API
         response = client.chat.completions.create(
