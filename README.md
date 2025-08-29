@@ -1,15 +1,25 @@
 # Non-Deterministic Website Generator
 
-A web application that generates unique, AI-powered websites using Groq's LLM API. Each request produces a different website based on the provided prompt and style.
+A web application that generates unique, AI-powered websites using Groq's LLM API. Each request produces a different website based on the provided prompt and style, making it perfect for rapid prototyping, inspiration, or quick website generation.
 
-## Features
+## 🌟 Key Features
 
-- 🚀 Generate unique websites with AI
-- 🎨 Multiple style options
-- ⚡ Fast response times with Groq Cloud
-- 📦 Export websites as HTML files
-- 🔒 Rate limited to 100 generations per day
-- 🎯 Modern, responsive UI
+### AI-Powered Generation
+- **Smart Content Creation**: Generates complete HTML, CSS, and JavaScript based on your description
+- **Multiple Style Options**: Choose from various design styles including Modern, Minimal, Corporate, Creative, and Elegant
+- **Dynamic Content**: Each generation creates unique layouts, color schemes, and content structures
+
+### User Experience
+- **Real-time Preview**: See your generated website instantly
+- **One-Click Download**: Export the complete website as a single HTML file
+- **Responsive Design**: Websites automatically adapt to different screen sizes
+- **Interactive Elements**: Generated sites include interactive components like navigation, forms, and animations
+
+### Technical Features
+- **Lightning Fast**: Powered by Groq's high-performance LLM API
+- **Rate Limited**: Fair usage policy of 100 generations per day
+- **Modern Stack**: Built with React and FastAPI for optimal performance
+- **Easy Deployment**: Ready to deploy on platforms like Render and Vercel
 
 ## Prerequisites
 
@@ -71,33 +81,70 @@ A web application that generates unique, AI-powered websites using Groq's LLM AP
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Usage
+## 🛠️ Usage Guide
 
-1. Enter a prompt describing the website you want to generate (e.g., "A portfolio for a photographer")
-2. Select a style from the dropdown
-3. Click "Generate Website"
-4. Once generated, you can preview the website and download the HTML file
+### Basic Usage
+1. **Enter Your Vision**: Describe the website you want in the input field (e.g., "A portfolio for a photographer with dark theme and modern animations")
+2. **Choose a Style**: Select from our curated style options:
+   - **Modern**: Clean layouts with contemporary design elements
+   - **Minimal**: Simple, content-focused designs with ample white space
+   - **Corporate**: Professional layouts suitable for businesses
+   - **Creative**: Bold, artistic designs with unique layouts
+   - **Elegant**: Sophisticated designs with refined typography
+3. **Generate**: Click "Generate Website" and watch as AI creates your custom site
+4. **Preview & Download**: View the result and download the complete HTML file with one click
 
-## Deployment
+### Advanced Tips
+- **Be Specific**: The more details you provide, better the results (e.g., "A bakery website with a warm color scheme, product gallery, and online ordering section")
+- **Combine Styles**: Some style combinations work exceptionally well together
+- **Iterate**: Generate multiple versions to explore different design directions
+- **Customize**: The downloaded HTML can be easily modified in any code editor
+
+## 🚀 Deployment
 
 ### Backend Deployment
+Deploy the FastAPI backend to any cloud provider:
 
-You can deploy the backend to services like:
-- [Render](https://render.com/)
+#### Render (Recommended)
+1. Connect your GitHub repository to Render
+2. Create a new Web Service
+3. Set the following environment variables:
+   - `GROQ_API_KEY`: Your Groq API key
+   - `PYTHON_VERSION`: 3.10.8
+   - `PORT`: 10000
+4. Deploy!
+
+#### Other Options
 - [Railway](https://railway.app/)
 - [Heroku](https://www.heroku.com/)
+- [PythonAnywhere](https://www.pythonanywhere.com/)
 
 ### Frontend Deployment
 
-Build the frontend for production:
-```bash
-cd frontend
-npm run build
+1. Build the production version:
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+2. Deploy the `build` folder to:
+   - [Vercel](https://vercel.com/) (Recommended)
+   - [Netlify](https://www.netlify.com/)
+   - [GitHub Pages](https://pages.github.com/)
+
+### Environment Variables
+For local development, create a `.env` file in the backend directory:
+```
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-You can deploy the `build` folder to:
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
+## 🌐 Live Demo
+Check out the live demo at:
+- Frontend: [GitHub Pages](https://aditya-ranjan1234.github.io/Non-Deterministic-Website/)
+- Backend API: [Render](https://non-deterministic-website.onrender.com)
+
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
 - [GitHub Pages](https://pages.github.com/)
 
 ## Rate Limiting
