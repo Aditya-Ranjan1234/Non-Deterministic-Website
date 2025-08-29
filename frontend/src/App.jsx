@@ -24,7 +24,7 @@ function App() {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:8000/random', {
+      const response = await fetch('https://non-deterministic-website.onrender.com/random', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ function App() {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:8000/generate', {
+      const response = await fetch('https://non-deterministic-website.onrender.com/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
