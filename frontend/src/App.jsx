@@ -5,11 +5,11 @@ function App() {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('modern');
   const [html, setHtml] = useState('');
-  const [isLoading, setIsLoading] = useState(true); // Start with loading true
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [remaining, setRemaining] = useState(100);
   const [resetTime, setResetTime] = useState('');
-  const [currentId, setCurrentId] = useState(Date.now()); // Unique ID for each generation
+  const [currentId, setCurrentId] = useState(Date.now());
 
   const styles = [
     { value: 'modern', label: 'Modern' },

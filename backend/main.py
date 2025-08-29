@@ -8,10 +8,8 @@ import random
 from typing import Optional, List, Dict
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-# List of random topics and styles for generation
 RANDOM_TOPICS = [
     "a personal portfolio for a digital artist",
     "a restaurant website with online ordering",
@@ -40,16 +38,14 @@ STYLES = [
 
 app = FastAPI()
 
-# CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Rate limiting
 DAILY_LIMIT = 100
 counter = {"count": 0, "reset_time": time.time() + 86400}
 
@@ -86,24 +82,20 @@ async def generate_website(request: GenerationRequest):
     global counter
     now = time.time()
 
-    # Reset daily counter if needed
     if now > counter["reset_time"]:
         counter = {"count": 0, "reset_time": now + 86400}
 
-    # Check rate limit
     if counter["count"] >= DAILY_LIMIT:
         raise HTTPException(
             status_code=429,
             detail=f"Daily limit of {DAILY_LIMIT} websites reached. Try again tomorrow."
         )
         
-    # If no prompt is provided, generate a random one
     if not request.prompt:
         random_data = get_random_prompt()
         request.prompt = random_data["prompt"]
         request.style = random_data["style"]
 
-    # Initialize Groq client
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         raise HTTPException(
@@ -133,7 +125,6 @@ async def generate_website(request: GenerationRequest):
         if request.style:
             prompt_text += f"\n        Style: {request.style.capitalize()} aesthetic with vibrant colors"
         
-        # Call Groq API
         response = client.chat.completions.create(
             model="compound-beta",
             messages=[
@@ -162,18 +153,14 @@ async def generate_website(request: GenerationRequest):
             max_tokens=2000
         )
 
-        # Update counter
         counter["count"] += 1
 
-        # Extract HTML content from the response
         html_content = response.choices[0].message.content
         
-        # Clean up the response if it contains markdown code blocks
         if "```html" in html_content:
             html_content = html_content.split("```html")[1].split("```")[0].strip()
         elif "```" in html_content:
             parts = html_content.split("```")
-            # Get the first code block's content
             if len(parts) > 1:
                 html_content = parts[1].strip()
 
