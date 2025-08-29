@@ -115,9 +115,34 @@ async def generate_website(request: GenerationRequest):
 
     try:
         # Prepare the prompt with optional style
-        prompt_text = f"Generate a unique, modern, and responsive HTML/CSS website about: {request.prompt}"
+        prompt_text = f"""Create a complete, content-rich website about: {request.prompt}
+        
+        Important requirements:
+        1. Generate a full website with unique, detailed content (no placeholders)
+        2. Include at least 3 distinct sections with different types of content
+        3. Each section should have a clear heading and meaningful content
+        4. Use CSS for styling (no external resources or images)
+        5. Make it responsive and mobile-friendly
+        6. Include a navigation menu that links to all sections
+        7. Add a footer with relevant information
+        8. Use semantic HTML5 elements
+        """
+        
         if request.style:
-            prompt_text += f" in {request.style} style"
+            prompt_text += f"\n        Style: {request.style.capitalize()} design aesthetic"
+            
+        # Add some randomness to the prompt
+        content_types = [
+            "Include interesting facts and statistics",
+            "Add a section with a brief history or background",
+            "Include a section with practical tips or advice",
+            "Add a section with common questions and answers",
+            "Include a section with related topics or further reading"
+        ]
+        
+        # Select 2-3 random content types to include
+        selected_content = random.sample(content_types, k=random.randint(2, 3))
+        prompt_text += "\n        Also include:\n" + "\n".join(f"- {item}" for item in selected_content)
         
         # Call Groq API
         response = client.chat.completions.create(
@@ -125,7 +150,19 @@ async def generate_website(request: GenerationRequest):
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a professional web designer. Generate clean, responsive HTML/CSS websites."
+                    "content": """You are a professional web designer and content creator. Generate a complete, content-rich, responsive HTML/CSS website with the following requirements:
+                    1. Create a full website with multiple sections (header, main content with at least 3 sections, footer)
+                    2. Include detailed, well-written content about the topic (no lorem ipsum)
+                    3. Use semantic HTML5 elements (header, nav, main, section, article, footer)
+                    4. Create a professional color scheme and typography
+                    5. Make it fully responsive for all screen sizes
+                    6. Include interactive elements like buttons or links
+                    7. No placeholder text or images - use only text and CSS for visual elements
+                    8. Ensure the content is well-structured and informative
+                    9. Include at least 3 different sections with unique content
+                    10. Add a footer with relevant links and information
+                    
+                    The website should look like a complete, professional site, not just a template."""
                 },
                 {
                     "role": "user",

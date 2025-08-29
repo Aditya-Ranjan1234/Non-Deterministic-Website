@@ -184,23 +184,35 @@ function App() {
         
         {error && <div className="error-message">{error}</div>}
 
-        {html && (
-          <div className="preview-section">
-            <div className="preview-header">
-              <h2>Preview</h2>
+        <div className="preview-section">
+          <div className="preview-header">
+            <h2>{isLoading ? 'Generating Your Website...' : 'Website Preview'}</h2>
+            {html && (
               <button onClick={downloadWebsite} className="download-button">
-                Download HTML
+                Download Website
               </button>
-            </div>
-            <div className="preview-container">
+            )}
+          </div>
+          <div className="preview-container">
+            {isLoading ? (
+              <div className="loading-state">
+                <div className="spinner"></div>
+                <p>Creating a unique website for you...</p>
+              </div>
+            ) : html ? (
               <iframe
                 title="Generated Website Preview"
                 srcDoc={html}
                 className="preview-iframe"
+                onLoad={() => setIsLoading(false)}
               />
-            </div>
+            ) : (
+              <div className="empty-state">
+                <p>Click "Generate New Website" to create your first website!</p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </main>
 
       <footer className="footer">
